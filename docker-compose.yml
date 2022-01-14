@@ -3,13 +3,14 @@ version: "3.4"
 services:
   sonarqube:
     image: sonarqube:8.9-community
+    restart: always
     container_name: sonarqube
     depends_on:
       - postgres
     ports:
       - "9000:9000"
     networks:
-      - sonarnet
+      - tools
     environment:
       SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonar
       SONAR_JDBC_USERNAME: sonar
@@ -22,6 +23,7 @@ services:
 
   postgres:
     image: postgres:12.2-alpine
+    restart: always
     container_name: postgres
     environment:
       POSTGRES_DB: sonar
@@ -30,7 +32,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - sonarnet
+      - tools
     volumes:
       - ./postgres/data:/var/lib/postgres/data
     healthcheck:
@@ -39,6 +41,21 @@ services:
       timeout: 5s
       retries: 5
 
+  jenkins:
+    image: jenkins/jenkins:lts
+    restart: always
+    privileged: true
+    user: root
+    ports:
+      - "8080:8080"
+      - "50000:5000"
+    container_name: jenkins
+    networks:
+      - tools
+    volumes:
+      - ./jenkins:/var/jenkins_home
+
+
 networks:
-  sonarnet:
+  tools:
     driver: bridge
