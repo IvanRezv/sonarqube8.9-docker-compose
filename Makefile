@@ -11,6 +11,12 @@ help: ## Show this help
 		Usage example:\n\
 	    	make up"
 
+sonar-conf: ## configure machine for Sonar needs
+	sudo sysctl -w vm.max_map_count=524288 || echo 1 \
+	&& sudo sysctl -w fs.file-max=131072 || echo 1 \
+	&& sudo ulimit -n 131072 || echo 1 \
+	&& sudo ulimit -u 8192 || echo 1
+
 build: ## rebuild all containers
 	$(docker_compose_bin) build
 
