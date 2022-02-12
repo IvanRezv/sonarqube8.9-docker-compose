@@ -17,24 +17,44 @@ sonar-conf: ## configure machine for Sonar needs
 	&& sudo ulimit -n 131072 || echo 1 \
 	&& sudo ulimit -u 8192 || echo 1
 
-build: ## rebuild all containers
+############# MANAGE ALL SERVICES ###############
+
+build-all: ## rebuild all containers
 	$(docker_compose_bin) build
 
-up:  ## rebuild and up all containers
+up-all:  ## rebuild and up all containers
 	$(docker_compose_bin) up -d --remove-orphans
 
-down: ## down all containers
+down-all: ## down all containers
 	$(docker_compose_bin) down
 
-pull: ## down all containers
+pull-all: ## down all containers
 	$(docker_compose_bin) pull
 
-deploy: down pull up
+deploy-all: down pull up
 
 prune: ## clear all
 	$(docker_bin) system prune
 
+############# MANAGE ALL SERVICES ###############
 
+############# ONLY SONAR DOCKER-COMPOSE ###############
+
+build-sonar: ## rebuild all containers
+	$(docker_compose_bin) -f sonarqube/docker-compose.yml build
+
+up-sonar:  ## rebuild and up all containers
+	$(docker_compose_bin) -f sonarqube/docker-compose.yml up -d --remove-orphans
+
+down-sonar: ## down all containers
+	$(docker_compose_bin) -f sonarqube/docker-compose.yml down
+
+pull-sonar: ## down all containers
+	$(docker_compose_bin) -f sonarqube/docker-compose.yml pull
+
+deploy-sonar: down pull up
+
+############# ONLY SONAR DOCKER-COMPOSE ###############
 
 full-clean: ##
 	$(docker_bin) image prune -a \

@@ -1,0 +1,47 @@
+version: "3.4"
+
+services:
+  sonarqube:
+    image: sonarqube:8.9-community
+    restart: always
+    container_name: sonarqube
+    depends_on:
+      - postgres
+    ports:
+      - "9000:9000"
+    networks:
+      - tools
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    volumes:
+      - ./sonarqube_data:/opt/sonarqube/data
+      - ./sonarqube_extensions:/opt/sonarqube/extensions
+      - ./sonarqube_logs:/opt/sonarqube/logs
+      - ./sonarqube_temp:/opt/sonarqube/temp
+
+  postgres:
+    image: postgres:12.2-alpine
+    restart: always
+    container_name: postgres
+    environment:
+      POSTGRES_DB: sonar
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+    ports:
+      - "5432:5432"
+    networks:
+      - tools
+    volumes:
+      - ./postgres/data:/var/lib/postgres/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U sonar" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+networks:
+  tools:
+    driver: bridge
