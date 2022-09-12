@@ -26,3 +26,8 @@ We recommend creating volumes for the following directories:
 - /opt/sonarqube/extensions: for 3rd party plugins
 
 `Warning`: You cannot use the same volumes on multiple instances of SonarQube.
+
+
+### Infrastructure model
+
+![Infrastructure model](.infragenie/infrastructure_model.png)
